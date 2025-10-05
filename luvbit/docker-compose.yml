@@ -1,0 +1,37 @@
+services:
+  luvbit-db:
+    image: postgres:15
+    container_name: luvbit-db
+    environment:
+      POSTGRES_DB: luvbit_db
+      POSTGRES_USER: luvbit
+      POSTGRES_PASSWORD: luvbit
+    ports:
+      - "5432:5432"
+    volumes:
+      - luvbit-db-data:/var/lib/postgresql/data
+    networks:
+      - luvbit_net
+
+  luvbit-backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    ports:
+      - "38000:8000"
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/data/tle/tle.dat:/app/data/tle.dat:ro
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - luvbit-db
+    networks:
+      - luvbit_net
+
+volumes:
+  luvbit-db-data:
+
+networks:
+  luvbit_net:
+    driver: bridge

@@ -1,0 +1,20 @@
+services:
+  migration-db:
+    build:
+      context: ./migration
+      dockerfile: docker/Dockerfile
+    container_name: migration-db
+    volumes:
+      - ./migration/migration:/migration
+    environment:
+      - DB_HOST=luvbit-db
+      - DB_PORT=5432
+      - DB_NAME=luvbit_db
+      - DB_USER=luvbit
+      - DB_PASSWORD=luvbit
+    networks:
+      - luvbit_luvbit_net
+
+networks:
+  luvbit_luvbit_net:
+    external: true
